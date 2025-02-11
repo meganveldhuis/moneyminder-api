@@ -6,7 +6,7 @@ export function up(knex) {
   //create tables
   return knex.schema.createTable("trips", (table) => {
     table.increments("id").primary();
-    table.string("name").notNullable();
+    table.string("trip_name").notNullable();
     table.date("from_date").notNullable();
     table.date("to_date").notNullable();
     table

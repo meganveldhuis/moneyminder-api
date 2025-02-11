@@ -10,7 +10,7 @@ export function up(knex) {
     table
       .timestamp("updated_at")
       .defaultTo(knex.raw("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"));
-    table.text("note").notNullable();
+    table.text("note");
     table.decimal("amount").notNullable();
     table
       .integer("category_id")
@@ -19,7 +19,7 @@ export function up(knex) {
       .onUpdate("CASCADE")
       .onDelete("CASCADE")
       .notNullable();
-    table.boolean("is_per_year").defaultTo(true);
+    table.boolean("is_per_year").defaultTo(false);
   });
 }
 

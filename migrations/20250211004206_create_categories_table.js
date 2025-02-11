@@ -6,7 +6,7 @@ export function up(knex) {
   //create tables
   return knex.schema.createTable("categories", (table) => {
     table.increments("id").primary();
-    table.string("name").notNullable();
+    table.string("category_name").notNullable();
     table.text("description");
     table.boolean("is_income").defaultTo(false);
   });
