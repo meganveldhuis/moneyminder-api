@@ -10,6 +10,14 @@ const PORT = process.env.PORT || 8080;
 app.use(cors());
 app.use(express.json());
 
+//All income routes
+import incomeRoutes from "./routes/income-routes.js";
+app.use("/api/income", incomeRoutes);
+
+//All expense routes
+import expenseRoutes from "./routes/expense-routes.js";
+app.use("/api/expense", expenseRoutes);
+
 app.get("/", (req, res) => {
   res.send("Reached the server!");
 });
