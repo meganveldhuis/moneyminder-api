@@ -57,7 +57,7 @@ async function doesCurrencyExist(currency_id) {
 }
 
 /* -------------------------------------------------------------------------- */
-/*                             Inventory Endpoints                            */
+/*                               Income Endpoints                             */
 /* -------------------------------------------------------------------------- */
 
 /*
@@ -65,7 +65,7 @@ async function doesCurrencyExist(currency_id) {
  * [x] `get` income by id
  * [x] `post` new income record
  * [x] `patch` edit income record
- * [ ] `delete` income record
+ * [x] `delete` income record
  */
 
 export async function getAllIncome(req, res) {
@@ -84,7 +84,8 @@ export async function getAllIncome(req, res) {
     queryBuilder = queryBuilder
       .join("categories", "categories.id", "category_id")
       .join("currencies", "currencies.id", "currency_id")
-      .whereILike("income.name", `%${query}%`);
+      .whereILike("income.name", `%${query}%`)
+      .orderBy("expenses.updated_at", "desc");
     const data = await queryBuilder;
 
     res.send(data);
@@ -111,6 +112,9 @@ export async function getSingleIncomeRecord(req, res) {
       .join("currencies", "currencies.id", "currency_id")
       .where({ "income.id": req.params.id });
     const data = await queryBuilder;
+    if (data.length < 1) {
+      return res.status(404).send(`No expense record with id ${req.params.id}`);
+    }
 
     res.send(data);
   } catch (error) {
@@ -148,6 +152,11 @@ export async function addIncomeRecord(req, res) {
   if (status !== 200) {
     return res.status(status).send(message);
   }
+  if (!categoryData.is_income) {
+    return res
+      .status(400)
+      .send(`Error: Category chosen needs to be an Income category`);
+  }
 
   //check if currency exists
   const doesCurrency = await doesCurrencyExist(newRecord.currency_id);
@@ -172,34 +181,37 @@ export async function editIncomeRecord(req, res) {
   const { id } = req.params;
   let edits = {};
   let status, message, categoryData, currencyData;
-  switch (true) {
-    case req.body.date !== undefined:
-      edits.date = new Date(req.body.date);
-
-    case req.body.name !== undefined:
-      edits.name = req.body.name;
-
-    case req.body.amount !== undefined:
-      edits.amount = Number(req.body.amount);
-
-    case req.body.category_id !== undefined:
-      //check if category exists
-      const doesCategory = await doesCategoryExist(req.body.category_id);
-      [status, message, categoryData] = doesCategory;
-      if (status !== 200) {
-        return res.status(status).send(message);
-      }
-      edits.category_id = req.body.category_id;
-
-    case req.body.currency_id !== undefined:
-      //check if currency exists
-      const doesCurrency = await doesCurrencyExist(req.body.currency_id);
-      [status, message, currencyData] = doesCurrency;
-      if (status !== 200) {
-        return res.status(status).send(message);
-      }
-      edits.currency_id = req.body.currency_id;
-    default:
+  if (req.body.date !== undefined) {
+    edits.date = new Date(req.body.date);
+  }
+  if (req.body.name !== undefined) {
+    edits.name = req.body.name;
+  }
+  if (req.body.amount !== undefined) {
+    edits.amount = Number(req.body.amount);
+  }
+  if (req.body.category_id !== undefined) {
+    //check if category exists
+    const doesCategory = await doesCategoryExist(req.body.category_id);
+    [status, message, categoryData] = doesCategory;
+    if (status !== 200) {
+      return res.status(status).send(message);
+    }
+    if (!categoryData.is_income) {
+      return res
+        .status(400)
+        .send(`Error: Category chosen needs to be an Income category`);
+    }
+    edits.category_id = req.body.category_id;
+  }
+  if (req.body.currency_id !== undefined) {
+    //check if currency exists
+    const doesCurrency = await doesCurrencyExist(req.body.currency_id);
+    [status, message, currencyData] = doesCurrency;
+    if (status !== 200) {
+      return res.status(status).send(message);
+    }
+    edits.currency_id = req.body.currency_id;
   }
 
   /* --------------------------- Check record exists -------------------------- */
