@@ -86,7 +86,8 @@ export async function getAllExpenses(req, res) {
       .join("categories", "categories.id", "category_id")
       .join("currencies", "currencies.id", "currency_id")
       .leftJoin("trips", "trips.id", "trip_id")
-      .whereILike("expenses.name", `%${query}%`);
+      .whereILike("expenses.name", `%${query}%`)
+      .orderBy("expenses.updated_at", "desc");
     const data = await queryBuilder;
 
     res.send(data);
