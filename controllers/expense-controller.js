@@ -150,11 +150,16 @@ export async function addExpenseRecord(req, res) {
   if (!isValidDate(newRecord.date)) {
     return res.status(400).send(`Error: ${newRecord.date} is not a valid date`);
   }
-  //check if category exists
+  //check if category exists and is an Expense category
   const doesCategory = await doesCategoryExist(newRecord.category_id);
   let [status, message, categoryData] = doesCategory;
   if (status !== 200) {
     return res.status(status).send(message);
+  }
+  if (categoryData.is_income) {
+    return res
+      .status(400)
+      .send(`Error: Category chosen needs to be an Expense category`);
   }
 
   //check if currency exists
@@ -196,6 +201,11 @@ export async function editExpenseRecord(req, res) {
     [status, message, categoryData] = doesCategory;
     if (status !== 200) {
       return res.status(status).send(message);
+    }
+    if (categoryData.is_income) {
+      return res
+        .status(400)
+        .send(`Error: Category chosen needs to be an Expense category`);
     }
     edits.category_id = req.body.category_id;
   }
