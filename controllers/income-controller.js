@@ -2,7 +2,9 @@ import initKnex from "knex";
 import configuration from "../knexfile.js";
 const knex = initKnex(configuration);
 
-/* --------------------------- reusable functions --------------------------- */
+/* -------------------------------------------------------------------------- */
+/*                             Reusable Functions                             */
+/* -------------------------------------------------------------------------- */
 //TODO: maybe add these to a utils file?
 function isValidDate(d) {
   return d instanceof Date && !isNaN(d);
@@ -54,11 +56,15 @@ async function doesCurrencyExist(currency_id) {
   return [status, message, currencyData];
 }
 
+/* -------------------------------------------------------------------------- */
+/*                             Inventory Endpoints                            */
+/* -------------------------------------------------------------------------- */
+
 /*
  * [x] `get` all income records
  * [x] `get` income by id
  * [x] `post` new income record
- * [ ] `patch` edit income record
+ * [x] `patch` edit income record
  * [ ] `delete` income record
  */
 
@@ -202,39 +208,47 @@ export async function editIncomeRecord(req, res) {
     if (!incomeRecord) {
       return res.status(404).send(`Income record not found with id ${id}`);
     }
-
-    //     const diffKeys = [];
-    //     for (const key in incomeRecord) {
-    //       if (!(key in edits) || incomeRecord[key] !== edits[key]) {
-    //         diffKeys.push(key);
-    //       }
-    //     }
-    //     for (const key in edits) {
-    //       if (!(key in incomeRecord) || incomeRecord[key] !== edits[key]) {
-    //         if (!diffKeys.includes(key)) {
-    //           diffKeys.push(key);
-    //         }
-    //       }
-    //     }
-    //     res.send(diffKeys);
-  } catch (error) {}
+  } catch (error) {
+    console.log(`Income record not found with id ${id}: ${error}`);
+    return res.status(404).send(`Income record not found with id ${id}`);
+  }
 
   /* -------------------------- Edit Record in Table -------------------------- */
   try {
     const numberRowsChanged = await knex("income")
       .where({ id: id })
       .update(edits);
-    res.json(numberRowsChanged);
+    if (numberRowsChanged < 1) {
+      return res.status(500).send(`Error occured. Income record not updated`);
+    }
+    const editedRecord = await getSingleIncomeRecord(req, res);
   } catch (error) {
     console.log(`Error editing income record: ${error}`);
-    res.status(500).send(`Error editing income record`);
+    return res.status(500).send(`Error editing income record`);
   }
 }
 
-// export async function getAllIncome(req, res) {
-//     try {
-//     } catch (error) {
-//       console.log(`Error getting all income records: ${error}`);
-//       res.status(500).send(`Error getting all income records`);
-//     }
-//   }
+export async function deleteIncomeRecord(req, res) {
+  const { id } = req.params;
+  try {
+    // Check if income record exists before deleting
+    const existingRecord = await knex("income").where({ id }).first();
+    if (!existingRecord) {
+      return res
+        .status(404)
+        .json({ message: `No income record found with id: ${id}` });
+    }
+
+    // Delete the record
+    await knex("income").where({ id }).del();
+
+    return res.status(200).json({
+      message: `Income record with id ${id} deleted successfully`,
+    });
+  } catch (error) {
+    console.error(`Error deleting record with id ${id}:`, error);
+    return res.status(500).json({
+      message: `Error deleting record with id: ${id}`,
+    });
+  }
+}
