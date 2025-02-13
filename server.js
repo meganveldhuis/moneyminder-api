@@ -18,6 +18,10 @@ app.use("/api/income", incomeRoutes);
 import expenseRoutes from "./routes/expense-routes.js";
 app.use("/api/expense", expenseRoutes);
 
+//All category routes
+import categoryRoutes from "./routes/category-routes.js";
+app.use("/api/categories", categoryRoutes);
+
 app.get("/", (req, res) => {
   res.send("Reached the server!");
 });
