@@ -176,40 +176,36 @@ export async function addExpenseRecord(req, res) {
 
 export async function editExpenseRecord(req, res) {
   /* ----------------------------- Validate Inputs ---------------------------- */
-  //TODO: DOESNT WORK WHEN CURRENCY ID or OTHER INPUTS ARE UNDEFINED:(
   const { id } = req.params;
   let edits = {};
   let status, message, categoryData, currencyData;
-  console.log(`currencyid: ${req.body.currency_id}`);
-  switch (true) {
-    case req.body.date !== undefined:
-      console.log("ran date");
-      edits.date = new Date(req.body.date);
 
-    case req.body.name !== undefined:
-      edits.name = req.body.name;
-
-    case req.body.amount !== undefined:
-      edits.amount = Number(req.body.amount);
-
-    case req.body.category_id !== undefined:
-      //check if category exists
-      const doesCategory = await doesCategoryExist(req.body.category_id);
-      [status, message, categoryData] = doesCategory;
-      if (status !== 200) {
-        return res.status(status).send(message);
-      }
-      edits.category_id = req.body.category_id;
-
-    case req.body.currency_id !== undefined:
-      //check if currency exists
-      const doesCurrency = await doesCurrencyExist(req.body.currency_id);
-      [status, message, currencyData] = doesCurrency;
-      if (status !== 200) {
-        return res.status(status).send(message);
-      }
-      edits.currency_id = req.body.currency_id;
-    default:
+  if (req.body.date !== undefined) {
+    edits.date = new Date(req.body.date);
+  }
+  if (req.body.name !== undefined) {
+    edits.name = req.body.name;
+  }
+  if (req.body.amount !== undefined) {
+    edits.amount = Number(req.body.amount);
+  }
+  if (req.body.category_id !== undefined) {
+    //check if category exists
+    const doesCategory = await doesCategoryExist(req.body.category_id);
+    [status, message, categoryData] = doesCategory;
+    if (status !== 200) {
+      return res.status(status).send(message);
+    }
+    edits.category_id = req.body.category_id;
+  }
+  if (req.body.currency_id !== undefined) {
+    //check if currency exists
+    const doesCurrency = await doesCurrencyExist(req.body.currency_id);
+    [status, message, currencyData] = doesCurrency;
+    if (status !== 200) {
+      return res.status(status).send(message);
+    }
+    edits.currency_id = req.body.currency_id;
   }
 
   /* --------------------------- Check record exists -------------------------- */

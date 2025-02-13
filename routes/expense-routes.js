@@ -12,4 +12,5 @@ router
   .get(expenseController.getSingleExpenseRecord)
   .patch(expenseController.editExpenseRecord)
   .delete(expenseController.deleteExpenseRecord);
+
 export default router;
