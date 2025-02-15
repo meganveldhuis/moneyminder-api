@@ -70,6 +70,9 @@ async function doesCurrencyExist(currency_id) {
 
 export async function getAllIncome(req, res) {
   let query = req.query.search || "";
+  let filterByYear = req.query.year || "";
+  let filterByMonth = req.query.month || "";
+  let filterByCategoryId = req.query.category || "";
   try {
     let queryBuilder = knex("income").select(
       "income.id",
@@ -85,7 +88,29 @@ export async function getAllIncome(req, res) {
       .join("categories", "categories.id", "category_id")
       .join("currencies", "currencies.id", "currency_id")
       .whereILike("income.name", `%${query}%`)
-      .orderBy("expenses.updated_at", "desc");
+      .orderBy("income.updated_at", "desc");
+    //for simplicity and better UI, we will only allow a filter by month if the year is set.
+    if (filterByYear) {
+      console.log(filterByYear);
+      if (filterByMonth) {
+        if (filterByMonth.length === 1) {
+          filterByMonth = `0${filterByMonth}`;
+        }
+        const nextMonth = Number(filterByMonth) + 1;
+        queryBuilder = queryBuilder
+          .where("date", ">=", `${filterByYear}-${filterByMonth}-01T00:00:00Z`)
+          .where("date", "<", `${filterByYear}-${nextMonth}-01T00:00:00Z`);
+      } else {
+        queryBuilder = queryBuilder
+          .where("date", ">=", `${filterByYear}-01-01T00:00:00Z`)
+          .where("date", "<=", `${filterByYear}-12-31T23:59:59Z`);
+      }
+    }
+    if (filterByCategoryId) {
+      queryBuilder = queryBuilder.where({
+        "expenses.category_id": filterByCategoryId,
+      });
+    }
     const data = await queryBuilder;
 
     res.send(data);

@@ -4,6 +4,7 @@ import initKnex from "knex";
 import configuration from "../knexfile.js";
 const knex = initKnex(configuration);
 
+//hit this at: http://localhost:8080/api/date/years
 router.get(`/years`, async (req, res) => {
   try {
     let data = await knex("expenses").select("expenses.date");
