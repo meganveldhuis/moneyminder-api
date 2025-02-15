@@ -22,6 +22,10 @@ app.use("/api/expense", expenseRoutes);
 import categoryRoutes from "./routes/category-routes.js";
 app.use("/api/categories", categoryRoutes);
 
+//All date routes
+import dateRoutes from "./routes/date-routes.js";
+app.use("/api/date", dateRoutes);
+
 app.get("/", (req, res) => {
   res.send("Reached the server!");
 });
