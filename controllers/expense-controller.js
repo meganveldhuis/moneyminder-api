@@ -92,23 +92,28 @@ export async function getAllExpenses(req, res) {
       .orderBy("expenses.updated_at", "desc");
 
     //for simplicity and better UI, we will only allow a filter by month if the year is set.
-    if (filterByYear) {
-      console.log(filterByYear);
-      if (filterByMonth) {
+    if (filterByYear && filterByYear != 0) {
+      console.log(filterByMonth, filterByYear);
+      if (filterByMonth && filterByMonth != 0) {
         if (filterByMonth.length === 1) {
           filterByMonth = `0${filterByMonth}`;
         }
-        const nextMonth = Number(filterByMonth) + 1;
+        let nextMonth = Number(filterByMonth) + 1;
+        let nextYear = filterByYear;
+        if (nextMonth === 13) {
+          nextMonth = "01";
+          nextYear = filterByYear + 1;
+        }
         queryBuilder = queryBuilder
           .where("date", ">=", `${filterByYear}-${filterByMonth}-01T00:00:00Z`)
-          .where("date", "<", `${filterByYear}-${nextMonth}-01T00:00:00Z`);
+          .where("date", "<", `${nextYear}-${nextMonth}-01T00:00:00Z`);
       } else {
         queryBuilder = queryBuilder
           .where("date", ">=", `${filterByYear}-01-01T00:00:00Z`)
           .where("date", "<=", `${filterByYear}-12-31T23:59:59Z`);
       }
     }
-    if (filterByCategoryId) {
+    if (filterByCategoryId && filterByCategoryId != 0) {
       queryBuilder = queryBuilder.where({
         "expenses.category_id": filterByCategoryId,
       });
