@@ -165,9 +165,9 @@ export async function getExpensesByCategory(req, res) {
     }
     const response = await queryBuilder;
     if (response.length === 0) {
-      res.status(204).send(`No data exists for request`);
+      return res.status(204).send(`No data exists for request`);
     }
-    res.status(200).send(response);
+    return res.status(200).send(response);
   } catch (error) {
     console.log(`Error getting expense records by category: ${error}`);
     res.status(500).send(`Error getting expense records by category`);
