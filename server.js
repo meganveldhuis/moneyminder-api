@@ -26,6 +26,10 @@ app.use("/api/categories", categoryRoutes);
 import dateRoutes from "./routes/date-routes.js";
 app.use("/api/date", dateRoutes);
 
+//All combined (budget, expense, and income) routes
+import combinedRoutes from "./routes/combined-routes.js";
+app.use("/api/combined", combinedRoutes);
+
 app.get("/", (req, res) => {
   res.send("Reached the server!");
 });
