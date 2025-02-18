@@ -130,6 +130,23 @@ export async function getAllExpenses(req, res) {
   }
 }
 
+export async function getExpensesByCategory(req, res) {
+  try {
+    const response = await knex("expenses")
+      .select("categories.category_name")
+      .join("categories", "categories.id", "category_id")
+      .sum("amount")
+      .groupBy("category_name");
+    if (response.length === 0) {
+      res.status(204).send(`No data exists for request`);
+    }
+    res.status(200).send(response);
+  } catch (error) {
+    console.log(`Error getting expense records by category: ${error}`);
+    res.status(500).send(`Error getting expense records by category`);
+  }
+}
+
 export async function getSingleExpenseRecord(req, res) {
   try {
     let queryBuilder = knex("expenses").select(

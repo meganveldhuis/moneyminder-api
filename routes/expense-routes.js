@@ -7,6 +7,8 @@ router
   .get(expenseController.getAllExpenses)
   .post(expenseController.addExpenseRecord);
 
+router.route("/category").get(expenseController.getExpensesByCategory);
+
 router
   .route("/:id")
   .get(expenseController.getSingleExpenseRecord)
