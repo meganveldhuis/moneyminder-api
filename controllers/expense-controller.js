@@ -131,12 +131,39 @@ export async function getAllExpenses(req, res) {
 }
 
 export async function getExpensesByCategory(req, res) {
+  let filterByYear = req.query.year || "";
+  let filterByMonth = req.query.month || "";
+  if (filterByMonth) {
+    // month inputs start at index of 0
+    filterByMonth = String(Number(filterByMonth) + 1);
+  }
   try {
-    const response = await knex("expenses")
+    let queryBuilder = knex("expenses")
       .select("categories.category_name")
       .join("categories", "categories.id", "category_id")
       .sum("amount as total")
       .groupBy("category_name");
+    if (filterByYear && filterByYear != 0) {
+      if (filterByMonth) {
+        if (filterByMonth.length === 1) {
+          filterByMonth = `0${filterByMonth}`;
+        }
+        let nextMonth = Number(filterByMonth) + 1;
+        let nextYear = filterByYear;
+        if (nextMonth === 13) {
+          nextMonth = "01";
+          nextYear = filterByYear + 1;
+        }
+        queryBuilder = queryBuilder
+          .where("date", ">=", `${filterByYear}-${filterByMonth}-01T00:00:00Z`)
+          .where("date", "<", `${nextYear}-${nextMonth}-01T00:00:00Z`);
+      } else {
+        queryBuilder = queryBuilder
+          .where("date", ">=", `${filterByYear}-01-01T00:00:00Z`)
+          .where("date", "<=", `${filterByYear}-12-31T23:59:59Z`);
+      }
+    }
+    const response = await queryBuilder;
     if (response.length === 0) {
       res.status(204).send(`No data exists for request`);
     }
