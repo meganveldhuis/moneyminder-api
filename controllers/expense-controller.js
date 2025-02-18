@@ -135,7 +135,7 @@ export async function getExpensesByCategory(req, res) {
     const response = await knex("expenses")
       .select("categories.category_name")
       .join("categories", "categories.id", "category_id")
-      .sum("amount")
+      .sum("amount as total")
       .groupBy("category_name");
     if (response.length === 0) {
       res.status(204).send(`No data exists for request`);
