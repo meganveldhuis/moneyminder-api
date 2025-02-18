@@ -70,8 +70,12 @@ async function doesCurrencyExist(currency_id) {
 export async function getAllExpenses(req, res) {
   let query = req.query.search || "";
   let filterByYear = req.query.year || "";
-  let filterByMonth = String(Number(req.query.month) + 1) || ""; // month inputs start at index of 0
+  let filterByMonth = req.query.month || "";
   let filterByCategoryId = req.query.category || "";
+  if (filterByMonth) {
+    // month inputs start at index of 0
+    filterByMonth = String(Number(filterByMonth) + 1);
+  }
   try {
     let queryBuilder = knex("expenses").select(
       "expenses.id",
@@ -93,7 +97,7 @@ export async function getAllExpenses(req, res) {
 
     //for simplicity and better UI, we will only allow a filter by month if the year is set.
     if (filterByYear && filterByYear != 0) {
-      if (filterByMonth && filterByMonth != 0) {
+      if (filterByMonth) {
         if (filterByMonth.length === 1) {
           filterByMonth = `0${filterByMonth}`;
         }
