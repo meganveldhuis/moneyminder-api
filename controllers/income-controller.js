@@ -71,7 +71,7 @@ async function doesCurrencyExist(currency_id) {
 export async function getAllIncome(req, res) {
   let query = req.query.search || "";
   let filterByYear = req.query.year || "";
-  let filterByMonth = req.query.month || "";
+  let filterByMonth = String(Number(req.query.month) + 1) || ""; // month inputs start at index of 0
   let filterByCategoryId = req.query.category || "";
   try {
     let queryBuilder = knex("income").select(
