@@ -30,6 +30,10 @@ app.use("/api/date", dateRoutes);
 import combinedRoutes from "./routes/combined-routes.js";
 app.use("/api/combined", combinedRoutes);
 
+//All budget routes
+import budgetRoutes from "./routes/budget-routes.js";
+app.use("/api/budget", budgetRoutes);
+
 app.get("/", (req, res) => {
   res.send("Reached the server!");
 });
