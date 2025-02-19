@@ -27,8 +27,8 @@ import dateRoutes from "./routes/date-routes.js";
 app.use("/api/date", dateRoutes);
 
 //All combined (budget, expense, and income) routes
-import combinedRoutes from "./routes/combined-routes.js";
-app.use("/api/combined", combinedRoutes);
+import currencyRoutes from "./routes/currency-routes.js";
+app.use("/api/currency", currencyRoutes);
 
 //All budget routes
 import budgetRoutes from "./routes/budget-routes.js";
