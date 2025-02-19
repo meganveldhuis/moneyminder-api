@@ -8,6 +8,8 @@ router
   .get(incomeController.getAllIncome)
   .post(incomeController.addIncomeRecord);
 
+router.route("/category").get(incomeController.getIncomeByCategory);
+
 router
   .route("/:id")
   .get(incomeController.getSingleIncomeRecord)

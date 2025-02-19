@@ -161,6 +161,54 @@ export async function getSingleIncomeRecord(req, res) {
   }
 }
 
+export async function getIncomeByCategory(req, res) {
+  let filterByYear = req.query.year || "";
+  let filterByMonth = req.query.month || "";
+  if (filterByMonth) {
+    // month inputs start at index of 0
+    filterByMonth = String(Number(filterByMonth) + 1);
+  }
+  try {
+    let queryBuilder = knex("income")
+      .select(
+        "categories.category_name",
+        "income.category_id",
+        "categories.is_income"
+      )
+      .join("categories", "categories.id", "category_id")
+      .sum("amount as total")
+      .groupBy("category_name", "category_id", "is_income");
+    if (filterByYear && filterByYear != 0) {
+      if (filterByMonth) {
+        if (filterByMonth.length === 1) {
+          filterByMonth = `0${filterByMonth}`;
+        }
+        let nextMonth = Number(filterByMonth) + 1;
+        let nextYear = filterByYear;
+        if (nextMonth === 13) {
+          nextMonth = "01";
+          nextYear = filterByYear + 1;
+        }
+        queryBuilder = queryBuilder
+          .where("date", ">=", `${filterByYear}-${filterByMonth}-01T00:00:00Z`)
+          .where("date", "<", `${nextYear}-${nextMonth}-01T00:00:00Z`);
+      } else {
+        queryBuilder = queryBuilder
+          .where("date", ">=", `${filterByYear}-01-01T00:00:00Z`)
+          .where("date", "<=", `${filterByYear}-12-31T23:59:59Z`);
+      }
+    }
+    const response = await queryBuilder;
+    if (response.length === 0) {
+      return res.status(204).send(`No data exists for request`);
+    }
+    return res.status(200).send(response);
+  } catch (error) {
+    console.log(`Error getting income records by category: ${error}`);
+    res.status(500).send(`Error getting income records by category`);
+  }
+}
+
 export async function addIncomeRecord(req, res) {
   /* ----------------------------- Validate Inputs ---------------------------- */
   let newRecord = {

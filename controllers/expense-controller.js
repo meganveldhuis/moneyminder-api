@@ -139,10 +139,14 @@ export async function getExpensesByCategory(req, res) {
   }
   try {
     let queryBuilder = knex("expenses")
-      .select("categories.category_name", "expenses.category_id")
+      .select(
+        "categories.category_name",
+        "expenses.category_id",
+        "categories.is_income"
+      )
       .join("categories", "categories.id", "category_id")
       .sum("amount as total")
-      .groupBy("category_name", "category_id");
+      .groupBy("category_name", "category_id", "is_income");
     if (filterByYear && filterByYear != 0) {
       if (filterByMonth) {
         if (filterByMonth.length === 1) {
