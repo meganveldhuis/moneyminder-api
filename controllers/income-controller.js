@@ -165,7 +165,7 @@ export async function addIncomeRecord(req, res) {
   /* ----------------------------- Validate Inputs ---------------------------- */
   let newRecord = {
     date: req.body.date,
-    name: req.body.note,
+    name: req.body.name,
     amount: req.body.amount,
     category_id: req.body.category_id,
     currency_id: req.body.currency_id,
