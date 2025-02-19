@@ -163,7 +163,13 @@ export async function getSingleIncomeRecord(req, res) {
 
 export async function addIncomeRecord(req, res) {
   /* ----------------------------- Validate Inputs ---------------------------- */
-  let newRecord = req.body;
+  let newRecord = {
+    date: req.body.date,
+    name: req.body.note,
+    amount: req.body.amount,
+    category_id: req.body.category_id,
+    currency_id: req.body.currency_id,
+  };
   if (
     !newRecord.date ||
     !newRecord.name ||
