@@ -34,6 +34,10 @@ app.use("/api/currency", currencyRoutes);
 import budgetRoutes from "./routes/budget-routes.js";
 app.use("/api/budget", budgetRoutes);
 
+//All trips routes
+import tripRoutes from "./routes/trip-routes.js";
+app.use("/api/trips", tripRoutes);
+
 app.get("/", (req, res) => {
   res.send("Reached the server!");
 });
