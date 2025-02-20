@@ -132,12 +132,7 @@ export async function getAllIncome(req, res) {
 export async function getSingleIncomeRecord(req, res) {
   try {
     let queryBuilder = knex("income").select(
-      "income.id",
-      "income.date",
-      "income.created_at",
-      "income.updated_at",
-      "income.name",
-      "income.amount",
+      "income.*",
       "categories.category_name",
       "currencies.code"
     );
@@ -150,7 +145,7 @@ export async function getSingleIncomeRecord(req, res) {
       return res.status(404).send(`No expense record with id ${req.params.id}`);
     }
 
-    res.send(data);
+    res.send(data[0]);
   } catch (error) {
     console.log(
       `Error getting income record with id ${req.params.id}: ${error}`
