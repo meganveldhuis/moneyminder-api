@@ -181,12 +181,7 @@ export async function getExpensesByCategory(req, res) {
 export async function getSingleExpenseRecord(req, res) {
   try {
     let queryBuilder = knex("expenses").select(
-      "expenses.id",
-      "expenses.date",
-      "expenses.created_at",
-      "expenses.updated_at",
-      "expenses.name",
-      "expenses.amount",
+      "expenses.*",
       "categories.category_name",
       "currencies.code as currency_code",
       "trips.trip_name"
