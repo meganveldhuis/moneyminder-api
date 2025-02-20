@@ -32,6 +32,27 @@ async function doesCategoryExist(category_id) {
   return [status, message, categoryData[0]];
 }
 
+async function doesTripExist(trip_id) {
+  let status = 200;
+  let message = ``;
+  let tripData = [];
+  try {
+    tripData = await knex("trips").where({
+      id: trip_id,
+    });
+    if (!tripData || tripData.length === 0) {
+      status = 404;
+      message = `No trip found with ID ${trip_id}.`;
+      console.log(`No trip found with ID ${trip_id}.`);
+    }
+  } catch (error) {
+    status = 404;
+    message = `Error: could not find trip with ID ${trip_id}`;
+    console.log(`Error: could not find trip with ID ${trip_id} ${error}`);
+  }
+  return [status, message, tripData[0]];
+}
+
 async function doesCurrencyExist(currency_id) {
   let status = 200;
   let message = ``;
@@ -215,6 +236,7 @@ export async function addExpenseRecord(req, res) {
     amount: req.body.amount,
     category_id: req.body.category_id,
     currency_id: req.body.currency_id,
+    trip_id: req.body.trip_id ? req.body.trip_id : null,
   };
   if (
     !newRecord.date ||
@@ -232,6 +254,15 @@ export async function addExpenseRecord(req, res) {
   if (!isValidDate(newRecord.date)) {
     return res.status(400).send(`Error: ${newRecord.date} is not a valid date`);
   }
+  //check if trip exists
+  if (newRecord.trip_id) {
+    const doesTrip = await doesTripExist(newRecord.trip_id);
+    let [status, message, tripData] = doesTrip;
+    if (status !== 200) {
+      return res.status(status).send(message);
+    }
+  }
+
   //check if category exists and is an Expense category
   const doesCategory = await doesCategoryExist(newRecord.category_id);
   let [status, message, categoryData] = doesCategory;
@@ -276,6 +307,17 @@ export async function editExpenseRecord(req, res) {
   }
   if (req.body.amount !== undefined) {
     edits.amount = Number(req.body.amount);
+  }
+  if (req.body.trip_id !== undefined) {
+    //check if trip exists
+    if (req.body.trip_id) {
+      const doesTrip = await doesTripExist(newRecord.trip_id);
+      let [status, message, tripData] = doesTrip;
+      if (status !== 200) {
+        return res.status(status).send(message);
+      }
+    }
+    edits.trip_id = req.body.trip_id ? req.body.trip_id : null;
   }
   if (req.body.category_id !== undefined) {
     //check if category exists
