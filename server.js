@@ -38,6 +38,10 @@ app.use("/api/budget", budgetRoutes);
 import tripRoutes from "./routes/trip-routes.js";
 app.use("/api/trips", tripRoutes);
 
+//All photo routes
+import photoRoutes from "./routes/photo-routes.js";
+app.use("/api/photo", photoRoutes);
+
 app.get("/", (req, res) => {
   res.send("Reached the server!");
 });

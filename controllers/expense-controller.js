@@ -311,7 +311,7 @@ export async function editExpenseRecord(req, res) {
   if (req.body.trip_id !== undefined) {
     //check if trip exists
     if (req.body.trip_id) {
-      const doesTrip = await doesTripExist(newRecord.trip_id);
+      const doesTrip = await doesTripExist(req.body.trip_id);
       let [status, message, tripData] = doesTrip;
       if (status !== 200) {
         return res.status(status).send(message);
