@@ -42,5 +42,11 @@ export async function seed(knex) {
       description: "",
       is_income: true,
     },
+    {
+      id: 7,
+      category_name: "Food",
+      description: "food eaten out, considered not groceries",
+      is_income: false,
+    },
   ]);
 }

@@ -54,5 +54,48 @@ export async function seed(knex) {
       category_id: 4,
       currency_id: 1,
     },
+    {
+      id: 7,
+      date: new Date(2025, 1, 1),
+      name: "February rent",
+      amount: 800,
+      category_id: 2,
+      currency_id: 1,
+    },
+    {
+      date: new Date(2025, 1, 4),
+      name: "Electricity bill",
+      amount: 250,
+      category_id: 3,
+      currency_id: 1,
+    },
+    {
+      date: new Date(2025, 1, 7),
+      name: "Sobeys",
+      amount: 175.2,
+      category_id: 1,
+      currency_id: 1,
+    },
+    {
+      date: new Date(2025, 1, 9),
+      name: "Climbing at Rock Jungle",
+      amount: 22.5,
+      category_id: 4,
+      currency_id: 1,
+    },
+    {
+      date: new Date(2025, 1, 9),
+      name: "Dinner with friends",
+      amount: 35.1,
+      category_id: 7,
+      currency_id: 1,
+    },
+    {
+      date: new Date(2025, 1, 13),
+      name: "Meal Prep",
+      amount: 200,
+      category_id: 1,
+      currency_id: 1,
+    },
   ]);
 }
