@@ -8,8 +8,11 @@ const knex = initKnex(configuration);
 
 export async function getAllBudget(req, res) {
   try {
-    let queryBuilder = knex("budget");
-
+    let queryBuilder = knex("budget").join(
+      "categories",
+      "categories.id",
+      "category_id"
+    );
     const data = await queryBuilder;
     if (!data) {
       return res.status(204).send(`No budget data `);
@@ -48,12 +51,12 @@ export async function addBudgetAndCategory(req, res) {
   let newCategory = {
     category_name: req.body.category_name,
     description: req.body.description,
-    is_income: req.body.is_income || true,
+    is_income: req.body.is_income,
   };
   let newBudget = {
     amount: req.body.amount,
     note: req.body.note,
-    is_per_year: req.body.is_per_year || false,
+    is_per_year: req.body.is_per_year,
   };
   if (
     !newCategory.category_name ||
