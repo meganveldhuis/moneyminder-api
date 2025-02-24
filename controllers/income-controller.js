@@ -5,7 +5,6 @@ const knex = initKnex(configuration);
 /* -------------------------------------------------------------------------- */
 /*                             Reusable Functions                             */
 /* -------------------------------------------------------------------------- */
-//TODO: maybe add these to a utils file?
 function isValidDate(d) {
   return d instanceof Date && !isNaN(d);
 }

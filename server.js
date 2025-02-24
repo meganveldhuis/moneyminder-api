@@ -26,7 +26,7 @@ app.use("/api/categories", categoryRoutes);
 import dateRoutes from "./routes/date-routes.js";
 app.use("/api/date", dateRoutes);
 
-//All combined (budget, expense, and income) routes
+//All currency routes
 import currencyRoutes from "./routes/currency-routes.js";
 app.use("/api/currency", currencyRoutes);
 
