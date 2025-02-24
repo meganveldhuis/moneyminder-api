@@ -97,5 +97,12 @@ export async function seed(knex) {
       category_id: 1,
       currency_id: 1,
     },
+    {
+      date: new Date(2025, 1, 13),
+      name: "Sobeys",
+      amount: 200,
+      category_id: 1,
+      currency_id: 1,
+    },
   ]);
 }
