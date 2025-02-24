@@ -165,6 +165,7 @@ export async function getExpensesByCategory(req, res) {
         "expenses.category_id",
         "categories.is_income"
       )
+      .orderBy("categories.category_name")
       .join("categories", "categories.id", "category_id")
       .sum("amount as total")
       .groupBy("category_name", "category_id", "is_income");
