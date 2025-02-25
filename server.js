@@ -42,6 +42,9 @@ app.use("/api/trips", tripRoutes);
 import photoRoutes from "./routes/photo-routes.js";
 app.use("/api/photo", photoRoutes);
 
+import geminiRoutes from "./routes/gemini-routes.js";
+app.use("/api/gemini", geminiRoutes);
+
 app.get("/", (req, res) => {
   res.send("Reached the server!");
 });
