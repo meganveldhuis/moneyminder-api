@@ -80,14 +80,6 @@ async function doesCurrencyExist(currency_id) {
 /*                              Expenses Endpoints                            */
 /* -------------------------------------------------------------------------- */
 
-/*
- * [x] `get` all expense records
- * [x] `get` expense by id
- * [x] `post` new expense record
- * [x] `patch` edit expense record
- * [x] `delete` expense record
- */
-
 export async function getAllExpenses(req, res) {
   let query = req.query.search || "";
   let filterByYear = req.query.year || "";
